@@ -14,7 +14,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
-const MongoStore = require('connect-mongo');
+const MongoStore = require('connect-mongo').default;
 
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -46,7 +46,7 @@ const store = MongoStore.create({
     touchAfter : 24 * 3600,
 });
 
-Store.on("error",() => {
+store.on("error",() => {
     console.log("error in the mongo SESSION STORE",err);
 })
 
