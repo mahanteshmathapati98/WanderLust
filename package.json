@@ -1,5 +1,5 @@
 {
-  "engines" : {
+  "engines": {
     "node": "v22.20.0"
   },
   "name": "major_project",
@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "connect-flash": "^0.1.1",
+    "connect-mongo": "^6.0.0",
     "dotenv": "^17.4.2",
     "ejs": "^6.0.1",
     "ejs-mate": "^4.0.0",
