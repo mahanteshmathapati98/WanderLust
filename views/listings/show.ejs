@@ -1,0 +1,360 @@
+<% layout("/layouts/boilerplate") %>
+
+<br>
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-8 offset-2">
+
+            <h3 class="mb-4"><%= listing.title %></h3>
+
+            <div class="card shadow-sm mb-4">
+
+                <img 
+                    src="<%= listing.image.url %>" 
+                    class="card-img-top" 
+                    alt="listing_image"
+                    style="height: 350px; object-fit: cover;"
+                >
+
+                <div class="card-body">
+
+                    <p class="card-text">
+                        Owned By 
+                        <i>
+                            <b><%= listing.owner.username %></b>
+                        </i>
+                    </p>
+
+                    <p class="card-text text-muted">
+                        <%= listing.description %>
+                    </p>
+
+                    <hr>
+
+                    <p class="mb-2">
+                        <strong>Price:</strong>
+                        ₹<%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A"%>
+                    </p>
+
+                    <p class="mb-2">
+                        <strong>Location:</strong>
+                        <%= listing.location %>
+                    </p>
+
+                    <p class="mb-3">
+                        <strong>Country:</strong>
+                        <%= listing.country %>
+                    </p>
+
+
+                    
+                    
+                    <% if(currUser && currUser._id.equals(listing.owner._id)){ %>
+                        
+                        <div class="d-flex gap-2">
+                            
+                            <a 
+                            href="/listings/<%= listing._id %>/edit" 
+                            class="btn btn-dark"
+                            >
+                            Edit Listing
+                        </a>
+                        
+                        <form 
+                        method="post" 
+                        action="/listings/<%= listing._id %>?_method=DELETE"
+                        >
+                        
+                        <button class="btn btn-danger">
+                            Delete Listing
+                        </button>
+                        
+                    </form>
+                    
+                </div>
+                
+                <br>
+                
+                <% } %>
+                
+                <!-- ================= MAP ================= -->
+
+                <hr>
+
+                <h4 class="mb-3">Where you'll be</h4>
+
+                <div id="map" class="w-100 mb-4"></div>
+
+                <!-- ================= END MAP ================= -->
+                
+                    <hr>
+
+
+                    <!-- ================= REVIEW SECTION ================= -->
+
+                    <div class="card shadow-sm border-0 mt-4 mb-5">
+
+                        <% if(currUser){ %>
+
+                            <div class="card-body p-4">
+
+                                <h4 class="mb-4 fw-semibold">
+                                    Leave a Review
+                                </h4>
+
+                                <form 
+                                    action="/listings/<%= listing._id %>/reviews"
+                                    method="POST"
+                                    novalidate
+                                    class="needs-validation"
+                                >
+
+                                    <!-- Rating -->
+
+                                    <div class="mb-4">
+
+                                        <label 
+                                            for="rating" 
+                                            class="form-label fw-semibold"
+                                        >
+                                            Rating
+                                        </label>
+
+                                        <div class="d-flex align-items-center gap-3">
+
+                                            <input 
+                                                type="range" 
+                                                min="1" 
+                                                max="5" 
+                                                id="rating" 
+                                                name="review[rating]"
+                                                class="form-range"
+                                                value="3"
+                                            >
+
+                                            <span 
+                                                class="badge bg-dark" 
+                                                id="ratingValue"
+                                            >
+                                                3
+                                            </span>
+
+                                        </div>
+
+                                        <div class="d-flex justify-content-between text-muted small">
+
+                                            <span>1 - Poor</span>
+
+                                            <span>5 - Excellent</span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Comment -->
+
+                                    <div class="mb-4">
+
+                                        <label 
+                                            for="comment" 
+                                            class="form-label fw-semibold"
+                                        >
+                                            Comments
+                                        </label>
+
+                                        <textarea 
+                                            name="review[comment]" 
+                                            id="comment"
+                                            class="form-control"
+                                            rows="5"
+                                            placeholder="Share your experience..."
+                                            required
+                                        ></textarea>
+
+                                        <div class="invalid-feedback">
+                                            Write your experience for reviews
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Submit -->
+
+                                    <button 
+                                        type="submit" 
+                                        class="btn btn-dark px-4"
+                                    >
+                                        Submit Review
+                                    </button>
+
+                                </form>
+
+
+                                <hr>
+
+
+                                <!-- ================= ALL REVIEWS ================= -->
+                                <% if(listing.reviews.length > 0){ %>
+
+                                <div class="mt-5 mb-5">
+
+                                    <h4 class="mb-4 fw-semibold">
+                                        All Reviews
+                                    </h4>
+
+                                    <div class="row g-4">
+
+                                        <% for (let review of listing.reviews) { %>
+
+                                            <div class="col-md-6">
+
+                                                <div class="card h-100 shadow-sm border-0">
+
+                                                    <div class="card-body">
+
+                                                        <h6 class="card-title">
+                                                            Mahantesh
+                                                        </h6>
+
+
+                                                        <!-- Rating -->
+
+                                                        <div class="mb-2">
+
+                                                            <span class="text-warning">
+
+                                                                <% for (let i = 1; i <= review.rating; i++) { %>
+
+                                                                    ★
+
+                                                                <% } %>
+
+                                                            </span>
+
+                                                            <span class="text-muted ms-2">
+
+                                                                <%= review.rating %>/5
+
+                                                            </span>
+
+                                                        </div>
+
+
+                                                        <!-- Comment -->
+
+                                                        <p class="card-text mb-0">
+
+                                                            "<%= review.comment %>"
+
+                                                        </p>
+
+                                                    </div>
+
+
+                                                    <form 
+                                                        method="POST"
+                                                        action="/listings/<%= listing._id%>/reviews/<%= review._id%>?_method=DELETE"
+                                                    >
+
+                                                        <button class="btn btn-sm btn-dark">
+
+                                                            Delete
+
+                                                        </button>
+
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </div>
+
+                                <% } %>
+
+
+                                <!-- ================= END ALL REVIEWS ================= -->
+
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                    <!-- ================= END REVIEW SECTION ================= -->
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= LEAFLET MAP SCRIPT ================= -->
+
+<script>
+
+    const locationName = "<%= listing.location %>, <%= listing.country %>";
+
+    fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`
+    )
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if (data.length === 0) {
+
+            console.log("Location not found:", locationName);
+
+            return;
+
+        }
+
+        const lat = data[0].lat;
+
+        const lon = data[0].lon;
+
+
+        const map = L.map("map").setView([lat, lon], 9);
+
+
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+
+            attribution: '&copy; OpenStreetMap contributors'
+
+        }).addTo(map);
+
+
+        L.marker([lat, lon])
+
+            .addTo(map)
+
+            .bindPopup("<%= listing.title %>")
+
+            .openPopup();
+
+    })
+
+    .catch(error => {
+
+        console.log("Map error:", error);
+
+    });
+
+</script>
